@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mascota Virtual</title>
+
+<style>
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+    margin: 0;
+    padding: 20px;
+    color: #1e293b;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #0f172a;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+/* CONTENEDOR PRINCIPAL */
+#contenedor {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* AREA DONDE SE SUELTAN OBJETOS */
+#zonaMascota {
+    width: 450px;
+    height: 350px;
+    border: 4px dashed #cbd5e1;
+    border-radius: 16px;
+    background-image: url("imagenes/roky/Roky la roca.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.03);
+}
+
+#zonaMascota:hover {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+/* PANEL DERECHA */
+#panel {
+    text-align: left;
+    font-size: 20px;
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#panel br {
+    display: none; /* Eliminamos los saltos de línea físicos para usar flexbox */
+}
+
+/* Estilo para agrupar cada etiqueta y su porcentaje */
+#panel label {
+    display: inline-block;
+    font-weight: 500;
+}
+
+#panel label[id^="lblPorcentaje"], 
+#panel label[id="lblRotas"] {
+    float: right;
+    font-weight: 700;
+    color: #2563eb;
+    background: #e0e7ff;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 18px;
+}
+
+/* Alerta roja específica para las ventanas rotas */
+#panel label[id="lblRotas"] {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+/* AREA DE OBJETOS */
+#objetos {
+    margin-top: 40px;
+    background: white;
+    padding: 20px 40px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 15px;
+}
+
+.objeto {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    padding: 10px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    cursor: grab;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.objeto:hover {
+    transform: scale(1.15) rotate(5deg);
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+.objeto:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+</style>
+
+<script>
+
+let hambre = 50;
+let sueno = 15;
+let salud = 100;
+let aburrimiento = 35;
+let suciedad = 5;
+let ventanas_rotas = 0;
+
+/* INICIA EL DRAG */
+function dragstartHandler(ev){
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+/* PERMITE SOLTAR */
+function dragoverHandler(ev){
+    ev.preventDefault();
+}
+
+/* CUANDO SE SUELTA */
+function dropHandler(ev){
+
+    ev.preventDefault();
+
+    const data = ev.dataTransfer.getData("text");
+
+    // obtiene el id de la imagen
+    if(data == "comida" && hambre>0){
+        hambre -= 5;
+        let muerte = Math.floor(Math.random() * 101);
+        if(muerte<6){
+        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/tumba roky.png')";}
+        else{
+            document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky la roca hambre.png')";
+    }}
+    if(data == "cama" && sueno>0){
+        sueno -= 5;
+        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky durmiendo.png')";
+    }
+    if(data == "salud" && salud>0 && salud<100){
+        salud += 5;
+        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky la roca.png')";
+    }
+    if(data == "juego" && aburrimiento>0){
+        aburrimiento -= 5;
+        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky la roca enojado.png')";
+    }
+    if(data == "limpiar" && suciedad>0){
+        suciedad -= 5;
+        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky bano.png')";
+    }
+    if(data == "tirar"){
+        ventanas_rotas++;
+        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky la roca enojado.png')";
+    }
+
+    actualizarLabels();
+}
+
+/* ACTUALIZA TEXTO */
+function actualizarLabels(){
+
+    document.getElementById("lblPorcentajeHambre").innerHTML =
+         hambre + "%";
+    document.getElementById("lblPorcentajeSueno").innerHTML =
+         sueno + "%";
+    document.getElementById("lblPorcentajeSalud").innerHTML =
+         salud + "%";
+    document.getElementById("lblPorcentajeAburrimiento").innerHTML =
+         aburrimiento + "%";
+    document.getElementById("lblPorcentajeSuciedad").innerHTML =
+         suciedad + "%";
+    document.getElementById("lblRotas").innerHTML =
+         ventanas_rotas;
+}
+
+function pasarTiempo() {
+    if (hambre < 100) hambre += 5;
+    if (sueno < 100) sueno += 5;
+    if (aburrimiento < 100) aburrimiento += 5;
+    if (suciedad < 100) suciedad += 5;
+    if (salud > 0) salud -= 5;
+
+    actualizarLabels();
+}
+
+setInterval(pasarTiempo, 30000);
+
+
+</script>
+
+</head>
+
+<body>
+
+<h1>Mascota Virtual</h1>
+
+<div id="contenedor">
+
+    <!-- DIV GRANDE -->
+    <div id="zonaMascota"
+         ondrop="dropHandler(event)"
+         ondragover="dragoverHandler(event)">
+         
+    </div>
+
+    <!-- LABELS -->
+    <div id="panel">
+        
+        <label id="lblHambre">Hambre: </label>
+        <label id="lblPorcentajeHambre">50% </label>
+        <br>
+        <label id="lblSueno">Sueño: </label>
+        <label id="lblPorcentajeSueno">15% </label>
+         <br>
+        <label id="lblSalud">Salud: </label>
+        <label id="lblPorcentajeSalud">100% </label>  
+        <br>  
+        <label id="lblaburrimiento">Aburrimiento: </label>
+        <label id="lblPorcentajeAburrimiento">35% </label>
+        <br>
+        <label id="lblsuciedad">Suciedad: </label>
+        <label id="lblPorcentajeSuciedad">5% </label>
+         <br>
+        <label id="lblrotas">Ventanas rotas: </label>
+        <label id="lblRotas">0 </label>
+
+
+    </div>
+
+</div>
+
+<!-- OBJETOS -->
+<div id="objetos">
+
+    <!-- COMIDA -->
+    <img
+        id="comida"
+        class="objeto"
+        src="imagenes/Comida/manazana.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+        
+    >
+
+    <!-- CAMA -->
+    <img
+        id="cama"
+        class="objeto"
+        src="imagenes/comida/Energia.webp"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+    >
+
+    <!-- ENFERMO -->
+    <img
+        id="salud"
+        class="objeto"
+        src="imagenes/Comida/Big Vial - RED - 0000.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+    >
+
+    <!-- Aburimiento -->
+    <img
+        id="juego"
+        class="objeto"
+        src="imagenes/extras/control.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+    >
+
+    <!-- Higiene -->
+    <img
+        id="limpiar"
+        class="objeto"
+        src="imagenes/extras/ducha.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+    >
+
+    <!-- Higiene -->
+    <img
+        id="tirar"
+        class="objeto"
+        src="imagenes/extras/resoltera.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+    >
+
+</div>
+
+</body>
+</html>
