@@ -168,29 +168,29 @@ function dropHandler(ev){
         hambre -= 5;
         let muerte = Math.floor(Math.random() * 101);
         if(muerte<6){
-        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/tumba roky.png')";}
+        document.getElementById("zonaMascota").style.backgroundImage ="url('Imagenes/roky/tumba roky.png')";}
         else{
-            document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky la roca hambre.png')";
+            document.getElementById("zonaMascota").style.backgroundImage ="url('Imagenes/roky/roky la roca hambre.png')";
     }}
     if(data == "cama" && sueno>0){
         sueno -= 5;
-        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky durmiendo.png')";
+        document.getElementById("zonaMascota").style.backgroundImage ="url('Imagenes/roky/roky durmiendo.png')";
     }
     if(data == "salud" && salud>0 && salud<100){
         salud += 5;
-        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky la roca.png')";
+        document.getElementById("zonaMascota").style.backgroundImage ="url('Imagenes/roky/roky la roca.png')";
     }
     if(data == "juego" && aburrimiento>0){
         aburrimiento -= 5;
-        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky la roca enojado.png')";
+        document.getElementById("zonaMascota").style.backgroundImage ="url('Imagenes/roky/roky la roca enojado.png')";
     }
     if(data == "limpiar" && suciedad>0){
         suciedad -= 5;
-        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky bano.png')";
+        document.getElementById("zonaMascota").style.backgroundImage ="url('Imagenes/roky/roky bano.png')";
     }
     if(data == "tirar"){
         ventanas_rotas++;
-        document.getElementById("zonaMascota").style.backgroundImage ="url('imagenes/roky/roky la roca enojado.png')";
+        document.getElementById("zonaMascota").style.backgroundImage ="url('Imagenes/roky/roky la roca enojado.png')";
     }
 
     actualizarLabels();
